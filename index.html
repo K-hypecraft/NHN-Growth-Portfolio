@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Marketer Portfolio | Kim Jiyeon</title>
+    <title>Kim Jiyeon | Digital Strategist & Crisis Manager</title>
     
-    <!-- 1. 스타일 및 라이브러리 불러오기 (Tailwind CSS, Lucide Icons) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- 2. 폰트 설정 -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -19,384 +18,347 @@
             background-color: #000;
             color: white;
             overflow-x: hidden;
-            cursor: none; /* 커스텀 커서를 위해 기본 커서 숨김 */
+            cursor: none;
         }
         
-        h1, h2, .font-cyber {
+        h1, h2, h3, .font-cyber {
             font-family: 'Orbitron', sans-serif;
         }
 
-        /* 네온 텍스트 효과 */
-        .text-neon {
-            color: #0affff;
-            text-shadow: 0 0 10px rgba(10, 255, 255, 0.5);
-        }
+        .text-neon { color: #0affff; text-shadow: 0 0 10px rgba(10, 255, 255, 0.5); }
+        .text-neon-pink { color: #ff00aa; text-shadow: 0 0 10px rgba(255, 0, 170, 0.5); }
+        .text-neon-purple { color: #bd00ff; text-shadow: 0 0 10px rgba(189, 0, 255, 0.5); }
+        .border-neon { border-color: #0affff; box-shadow: 0 0 10px rgba(10, 255, 255, 0.2); }
 
-        .border-neon {
-            border-color: #0affff;
-            box-shadow: 0 0 10px rgba(10, 255, 255, 0.2);
-        }
+        .cursor-dot { width: 8px; height: 8px; background-color: #0affff; }
+        .cursor-outline { width: 40px; height: 40px; border: 1px solid #0affff; }
 
-        /* 커스텀 커서 */
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #0affff;
-        }
-        .cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #0affff;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #0affff; border-radius: 4px; }
 
-        /* 스크롤바 커스텀 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #111;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #0affff;
-            border-radius: 4px;
-        }
-
-        /* 애니메이션 유틸 */
         .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-        /* 비디오 임베드 스타일 */
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 비율 */
-            height: 0;
+        .stat-card { 
+            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(10, 255, 255, 0.1), rgba(189, 0, 255, 0.1));
+            border: 1px solid rgba(10, 255, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #0affff, #ff00aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(10, 255, 255, 0.1);
+            border: 1px solid #0affff;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin: 0.25rem;
+        }
+
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            background: #0affff;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(10, 255, 255, 0.8);
+        }
+
+        .project-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .project-card:hover {
+            border-color: #0affff;
+            box-shadow: 0 0 30px rgba(10, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .skill-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
             overflow: hidden;
         }
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+
+        .skill-fill {
             height: 100%;
+            background: linear-gradient(90deg, #0affff, #ff00aa);
+            animation: fillBar 2s ease-out;
         }
 
-        /* 이미지 갤러리 스타일 */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .image-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1rem;
-            aspect-ratio: 1/1;
-            cursor: pointer;
-        }
-
-        .image-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .image-card:hover img {
-            transform: scale(1.1);
-        }
-
-        .image-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            display: flex;
-            align-items: flex-end;
-            padding: 1rem;
-        }
-
-        .image-card:hover .image-overlay {
-            opacity: 1;
+        @keyframes fillBar {
+            from { width: 0; }
         }
     </style>
 </head>
 <body class="selection:bg-[#0affff] selection:text-black">
 
-    <!-- 3. Three.js 배경 (우주 효과) -->
     <div id="canvas-container" class="fixed top-0 left-0 w-full h-full -z-10 opacity-60"></div>
 
-    <!-- 4. 커스텀 커서 -->
     <div id="cursor-dot" class="fixed top-0 left-0 rounded-full pointer-events-none z-[100] cursor-dot mix-blend-difference"></div>
     <div id="cursor-outline" class="fixed top-0 left-0 rounded-full pointer-events-none z-[100] cursor-outline transition-transform duration-100 ease-out mix-blend-difference hidden md:block"></div>
 
-    <!-- 5. 상단 진행 바 -->
     <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-[#0affff] z-50 w-0 transition-all duration-100 shadow-[0_0_10px_#0affff]"></div>
 
-    <!-- 6. 헤더 -->
-    <header class="fixed top-0 w-full p-6 flex justify-between items-center z-40 mix-blend-difference">
+    <header class="fixed top-0 w-full p-6 flex justify-between items-center z-40 backdrop-blur-sm bg-black/30">
         <div class="text-2xl font-black tracking-tighter font-cyber cursor-pointer hover:text-[#0affff] transition-colors">KJY.</div>
         
         <div class="flex items-center gap-6">
-            <button onclick="openAiModal()" class="hidden md:flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all text-xs font-bold tracking-widest uppercase hover-trigger">
-                <i data-lucide="bot" width="14"></i> AI Lab
-            </button>
-            <i data-lucide="menu" class="cursor-pointer hover:text-[#0affff] transition-colors hover-trigger" onclick="toggleMenu()"></i>
+            <a href="#contact" class="hidden md:flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 hover:bg-white hover:text-black transition-all text-xs font-bold tracking-widest uppercase">
+                <i data-lucide="mail" width="14"></i> CONTACT
+            </a>
+            <i data-lucide="menu" class="cursor-pointer hover:text-[#0affff] transition-colors" onclick="toggleMenu()"></i>
         </div>
     </header>
 
-    <!-- 메뉴 오버레이 -->
     <div id="menu-overlay" class="fixed inset-0 bg-black/95 z-[60] flex-col justify-center items-center gap-8 backdrop-blur-xl hidden opacity-0 transition-opacity duration-300">
         <i data-lucide="x" class="absolute top-8 right-8 cursor-pointer hover:text-[#0affff] hover:rotate-90 transition-all" width="40" height="40" onclick="toggleMenu()"></i>
-        <a href="#hero" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent stroke-white hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">HERO</a>
-        <a href="#projects" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent stroke-white hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">PROJECTS</a>
-        <a href="#gallery" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent stroke-white hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">GALLERY</a>
-        <a href="#journey" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent stroke-white hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">JOURNEY</a>
-        <a href="#contact" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent stroke-white hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">CONTACT</a>
+        <a href="#hero" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">HOME</a>
+        <a href="#achievements" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">IMPACT</a>
+        <a href="#experience" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">EXPERIENCE</a>
+        <a href="#skills" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">EXPERTISE</a>
+        <a href="#contact" onclick="toggleMenu()" class="text-6xl md:text-8xl font-black font-cyber text-transparent hover:text-[#0affff] transition-all" style="-webkit-text-stroke: 1px rgba(255,255,255,0.5);">CONTACT</a>
     </div>
 
-    <!-- 7. 메인 콘텐츠 -->
     <main>
-        <!-- HERO 섹션 -->
-        <section id="hero" class="h-screen flex flex-col justify-center items-center text-center px-4 relative">
-            <div class="text-xs md:text-sm tracking-[0.5em] text-[#0affff] mb-4 animate-pulse font-cyber">DIGITAL PORTFOLIO 2025</div>
-            <h1 class="text-6xl md:text-9xl font-black leading-none mb-6 mix-blend-overlay">
-                HUMAN <br/>
-                <span class="text-transparent" style="-webkit-text-stroke: 2px white;">THINKER</span>
+        <!-- HERO -->
+        <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative">
+            <div class="text-xs md:text-sm tracking-[0.5em] text-[#0affff] mb-4 animate-pulse font-cyber">DIGITAL STRATEGIST & CRISIS MANAGER</div>
+            <h1 class="text-5xl md:text-8xl lg:text-9xl font-black leading-none mb-6">
+                KIM JIYEON
             </h1>
-            <p class="max-w-xl text-gray-400 text-sm md:text-lg mb-12 fade-in">
-                DIGITAL MAKER & STRATEGIST <br/>
-                Crafting futuristic digital experiences that win hearts.
+            <div class="text-2xl md:text-4xl font-bold mb-8 text-transparent" style="-webkit-text-stroke: 1px white;">
+                HUMAN THINKER<br/>
+                DATA DRIVEN
+            </div>
+            <p class="max-w-2xl text-gray-300 text-sm md:text-lg mb-12 leading-relaxed">
+                51만 명 대규모 축제 무사고 운영 | 제로 예산 SNS 트래픽 55배 성장<br/>
+                13일 만에 팬덤 이벤트 기적 완성 | 위기관리 전문가
             </p>
-            <div class="flex flex-col items-center gap-2 text-xs text-gray-500 animate-bounce cursor-pointer hover-trigger" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">
-                SCROLL TO DISCOVER
+            <div class="flex flex-wrap gap-3 justify-center mb-12">
+                <span class="achievement-badge">🏆 모범직원 표창장 (신규 7개월)</span>
+                <span class="achievement-badge">📈 SNS 조회수 55배 증가</span>
+                <span class="achievement-badge">👥 51만 명 무사고 관리</span>
+                <span class="achievement-badge">⚡ 13일 만에 이벤트 완성</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 text-xs text-gray-500 animate-bounce cursor-pointer" onclick="document.getElementById('achievements').scrollIntoView({behavior:'smooth'})">
+                SCROLL TO EXPLORE
                 <i data-lucide="arrow-down" width="16"></i>
             </div>
         </section>
 
-        <!-- PROJECTS 섹션 -->
-        <section id="projects" class="min-h-screen bg-black/80 backdrop-blur-sm">
-            <!-- 프로젝트 1 -->
-            <div class="w-full flex flex-col md:flex-row border-t border-white/10 group hover-trigger" onclick="openProjectModal('01')">
-                <div class="w-full md:w-1/2 p-12 flex flex-col justify-center bg-black/50 transition-colors group-hover:bg-white/5">
-                    <div class="text-[#ff00aa] font-mono mb-4">01 / FANDOM</div>
-                    <h2 class="text-5xl md:text-7xl font-black mb-8 text-[#ff00aa] transition-transform group-hover:translate-x-4">KKOJILLAND</h2>
-                    <div class="flex items-center gap-4 text-gray-400 mb-6 font-mono text-sm">
-                        <span>2025</span><div class="h-px w-8 bg-gray-600"></div><span>카지노 컨셉 생일파티</span>
-                    </div>
-                    <div class="flex gap-2 flex-wrap">
-                        <span class="px-3 py-1 border border-white/20 rounded-full text-xs">Event</span>
-                        <span class="px-3 py-1 border border-white/20 rounded-full text-xs">Gamification</span>
-                    </div>
-                </div>
-                <div class="w-full md:w-1/2 h-[50vh] md:h-auto bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop" 
-                         alt="KKOJILLAND Casino Event" 
-                         class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 z-10"></div>
-                    <div class="absolute bottom-6 left-6 z-20 text-xs text-gray-400 font-mono">📸 Event Concept</div>
-                </div>
-            </div>
-
-            <!-- 프로젝트 2 -->
-            <div class="w-full flex flex-col md:flex-row border-t border-white/10 group hover-trigger" onclick="openProjectModal('02')">
-                <div class="w-full md:w-1/2 p-12 flex flex-col justify-center bg-black/50 transition-colors group-hover:bg-white/5">
-                    <div class="text-[#0affff] font-mono mb-4">02 / MEGA EVENT</div>
-                    <h2 class="text-5xl md:text-7xl font-black mb-8 text-[#0affff] transition-transform group-hover:translate-x-4">SUWON MEDIA</h2>
-                    <div class="flex items-center gap-4 text-gray-400 mb-6 font-mono text-sm">
-                        <span>2025</span><div class="h-px w-8 bg-gray-600"></div><span>30만 인파 위기관리</span>
-                    </div>
-                    <div class="flex gap-2 flex-wrap">
-                        <span class="px-3 py-1 border border-white/20 rounded-full text-xs">Risk Mgmt</span>
-                        <span class="px-3 py-1 border border-white/20 rounded-full text-xs">Public</span>
-                    </div>
-                </div>
-                <div class="w-full md:w-1/2 h-[50vh] md:h-auto bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1200&auto=format&fit=crop" 
-                         alt="SUWON MEDIA Festival" 
-                         class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 z-10"></div>
-                    <div class="absolute bottom-6 left-6 z-20 text-xs text-gray-400 font-mono">📸 Festival Management</div>
-                </div>
-            </div>
-
-             <!-- 프로젝트 3 -->
-             <div class="w-full flex flex-col md:flex-row border-t border-white/10 group hover-trigger" onclick="openProjectModal('03')">
-                <div class="w-full md:w-1/2 p-12 flex flex-col justify-center bg-black/50 transition-colors group-hover:bg-white/5">
-                    <div class="text-[#bd00ff] font-mono mb-4">03 / AI ART</div>
-                    <h2 class="text-5xl md:text-7xl font-black mb-8 text-[#bd00ff] transition-transform group-hover:translate-x-4">BAEKHO</h2>
-                    <div class="flex items-center gap-4 text-gray-400 mb-6 font-mono text-sm">
-                        <span>2024</span><div class="h-px w-8 bg-gray-600"></div><span>청각적 서사의 시각화</span>
-                    </div>
-                    <div class="flex gap-2 flex-wrap">
-                        <span class="px-3 py-1 border border-white/20 rounded-full text-xs">Gen AI</span>
-                        <span class="px-3 py-1 border border-white/20 rounded-full text-xs">Midjourney</span>
-                    </div>
-                </div>
-                <div class="w-full md:w-1/2 h-[50vh] md:h-auto bg-gray-900 flex items-center justify-center relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop" 
-                         alt="BAEKHO AI Art" 
-                         class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 z-10"></div>
-                    <div class="absolute bottom-6 left-6 z-20 text-xs text-gray-400 font-mono">🎨 AI Generated Art</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 새로운 GALLERY 섹션 -->
-        <section id="gallery" class="min-h-screen py-24 px-6 md:px-24 bg-gradient-to-b from-black to-gray-900">
-            <h2 class="text-4xl md:text-6xl font-black mb-12 text-center font-cyber fade-in">VISUAL SHOWCASE</h2>
+        <!-- IMPACT NUMBERS -->
+        <section id="achievements" class="min-h-screen py-24 px-6 md:px-24 bg-black/80 backdrop-blur-sm">
+            <h2 class="text-4xl md:text-6xl font-black mb-4 text-center font-cyber text-[#0affff]">IMPACT BY NUMBERS</h2>
+            <p class="text-center text-gray-400 mb-16">데이터로 증명하는 실행력</p>
             
-            <!-- 비디오 임베드 섹션 -->
-            <div class="mb-20 fade-in">
-                <h3 class="text-2xl font-bold mb-8 text-[#0affff] font-cyber">Featured Works</h3>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <!-- YouTube 비디오 1 -->
-                    <div class="border border-white/10 rounded-2xl overflow-hidden bg-gray-900/50">
-                        <div class="video-wrapper">
-                            <iframe 
-                                src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                                title="Project Showcase 1" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-                        <div class="p-6">
-                            <h4 class="text-xl font-bold mb-2">Event Highlight Reel</h4>
-                            <p class="text-sm text-gray-400">팬덤 이벤트 하이라이트 영상</p>
-                        </div>
-                    </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-24 fade-in">
+                <div class="stat-card p-8 rounded-2xl text-center">
+                    <div class="stat-number">510K</div>
+                    <div class="text-sm text-gray-400 mt-2">16일간 총 관람객 수</div>
+                    <div class="text-xs text-[#0affff] mt-1">무사고 운영 달성</div>
+                </div>
+                <div class="stat-card p-8 rounded-2xl text-center">
+                    <div class="stat-number">55X</div>
+                    <div class="text-sm text-gray-400 mt-2">SNS 조회수 증가율</div>
+                    <div class="text-xs text-[#0affff] mt-1">1,000 → 55,000회</div>
+                </div>
+                <div class="stat-card p-8 rounded-2xl text-center">
+                    <div class="stat-number">13</div>
+                    <div class="text-sm text-gray-400 mt-2">일 만에 이벤트 완성</div>
+                    <div class="text-xs text-[#0affff] mt-1">정상 기간: 4주+</div>
+                </div>
+                <div class="stat-card p-8 rounded-2xl text-center">
+                    <div class="stat-number">95%</div>
+                    <div class="text-sm text-gray-400 mt-2">팬 만족도</div>
+                    <div class="text-xs text-[#0affff] mt-1">꼬질랜드 프로젝트</div>
+                </div>
+            </div>
 
-                    <!-- YouTube 비디오 2 -->
-                    <div class="border border-white/10 rounded-2xl overflow-hidden bg-gray-900/50">
-                        <div class="video-wrapper">
-                            <iframe 
-                                src="https://www.youtube.com/embed/jNQXAC9IVRw" 
-                                title="Project Showcase 2" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                            </iframe>
+            <div class="grid md:grid-cols-3 gap-8 fade-in">
+                <div class="p-8 border border-white/10 rounded-2xl hover:border-[#0affff] transition-all">
+                    <i data-lucide="shield-check" class="text-[#0affff] mb-4" width="40" height="40"></i>
+                    <h3 class="text-2xl font-bold mb-4">Crisis Management</h3>
+                    <div class="space-y-3 text-sm text-gray-400">
+                        <div class="flex justify-between"><span>우천 취소 민원 폭주</span><span class="text-[#0affff]">즉시 해결</span></div>
+                        <div class="flex justify-between"><span>소음 민원 경찰 출동</span><span class="text-[#0affff]">1~2일 해결</span></div>
+                        <div class="flex justify-between"><span>계약 변경 조율</span><span class="text-[#0affff]">Win-Win 합의</span></div>
+                        <div class="flex justify-between"><span>시스템 오류 대응</span><span class="text-[#0affff]">매출 누락 방지</span></div>
+                    </div>
+                </div>
+
+                <div class="p-8 border border-white/10 rounded-2xl hover:border-[#ff00aa] transition-all">
+                    <i data-lucide="trending-up" class="text-[#ff00aa] mb-4" width="40" height="40"></i>
+                    <h3 class="text-2xl font-bold mb-4">Growth Marketing</h3>
+                    <div class="space-y-3 text-sm text-gray-400">
+                        <div class="flex justify-between"><span>재단 SNS 팔로워</span><span class="text-[#ff00aa]">+36% 증가</span></div>
+                        <div class="flex justify-between"><span>평균 조회수</span><span class="text-[#ff00aa]">1K → 6K (6배)</span></div>
+                        <div class="flex justify-between"><span>최고 조회수</span><span class="text-[#ff00aa]">55,000회</span></div>
+                        <div class="flex justify-between"><span>AI 콘텐츠 제작</span><span class="text-[#ff00aa]">예산 0원</span></div>
+                    </div>
+                </div>
+
+                <div class="p-8 border border-white/10 rounded-2xl hover:border-[#bd00ff] transition-all">
+                    <i data-lucide="users" class="text-[#bd00ff] mb-4" width="40" height="40"></i>
+                    <h3 class="text-2xl font-bold mb-4">Fandom Strategy</h3>
+                    <div class="space-y-3 text-sm text-gray-400">
+                        <div class="flex justify-between"><span>모랑공방 Pre-order</span><span class="text-[#bd00ff]">3차 완판</span></div>
+                        <div class="flex justify-between"><span>재고 리스크</span><span class="text-[#bd00ff]">0원 (선주문)</span></div>
+                        <div class="flex justify-between"><span>마케팅 비용</span><span class="text-[#bd00ff]">0원 (UGC)</span></div>
+                        <div class="flex justify-between"><span>꼬질랜드 만족도</span><span class="text-[#bd00ff]">95%</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section id="experience" class="min-h-screen py-24 px-6 md:px-24 bg-gradient-to-b from-black to-gray-900">
+            <h2 class="text-4xl md:text-6xl font-black mb-16 text-center font-cyber">PROFESSIONAL EXPERIENCE</h2>
+
+            <!-- 수원문화재단 -->
+            <div class="mb-24 fade-in">
+                <div class="project-card p-8 md:p-12 rounded-3xl bg-black/50" onclick="openModal('suwon')">
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="w-full md:w-2/3">
+                            <div class="text-[#0affff] font-mono text-sm mb-2">2025.05 ~ 2025.11 | 7개월</div>
+                            <h3 class="text-3xl md:text-5xl font-black mb-6 text-[#0affff]">수원문화재단</h3>
+                            <div class="text-xl font-bold mb-4">관광육성팀 주임 | Ticket Manager & 축제 운영 총괄</div>
+                            <p class="text-gray-400 mb-6 leading-relaxed">
+                                51만 명 방문 대규모 축제 16일 무사고 운영 달성. 티켓 시스템 완결성 확보 및 제로 예산 SNS 전략으로 조회수 55배 증가. 신규 입사 7개월 만에 모범직원 표창장 수상.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-[#0affff]/10 border border-[#0affff] rounded-full text-xs">Crisis Management</span>
+                                <span class="px-3 py-1 bg-[#0affff]/10 border border-[#0affff] rounded-full text-xs">Risk Control</span>
+                                <span class="px-3 py-1 bg-[#0affff]/10 border border-[#0affff] rounded-full text-xs">AI Marketing</span>
+                                <span class="px-3 py-1 bg-[#0affff]/10 border border-[#0affff] rounded-full text-xs">Ticket Admin</span>
+                                <span class="px-3 py-1 bg-[#0affff]/10 border border-[#0affff] rounded-full text-xs">Stakeholder</span>
+                            </div>
                         </div>
-                        <div class="p-6">
-                            <h4 class="text-xl font-bold mb-2">Festival Documentary</h4>
-                            <p class="text-sm text-gray-400">수원 미디어 페스티벌 다큐멘터리</p>
+                        <div class="w-full md:w-1/3 flex flex-col justify-center gap-4">
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#0affff]">510K</div>
+                                <div class="text-xs text-gray-400">총 관람객</div>
+                            </div>
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#0affff]">16일</div>
+                                <div class="text-xs text-gray-400">무사고 운영</div>
+                            </div>
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#0affff]">55X</div>
+                                <div class="text-xs text-gray-400">조회수 증가</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 이미지 갤러리 -->
-            <div class="fade-in">
-                <h3 class="text-2xl font-bold mb-8 text-[#ff00aa] font-cyber">Project Gallery</h3>
-                <div class="gallery-grid">
-                    <div class="image-card">
-                        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=800&auto=format&fit=crop" alt="Event Planning">
-                        <div class="image-overlay">
-                            <div>
-                                <h4 class="font-bold">Event Planning</h4>
-                                <p class="text-xs text-gray-300">Strategic Design</p>
+            <!-- 꼬질랜드 -->
+            <div class="mb-24 fade-in">
+                <div class="project-card p-8 md:p-12 rounded-3xl bg-black/50" onclick="openModal('kkojilland')">
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="w-full md:w-2/3">
+                            <div class="text-[#ff00aa] font-mono text-sm mb-2">2024.11 | 13일 프로젝트</div>
+                            <h3 class="text-3xl md:text-5xl font-black mb-6 text-[#ff00aa]">꼬질랜드 - 버추얼 IP 이벤트</h3>
+                            <div class="text-xl font-bold mb-4">총괄 기획 & 디자인 총괄</div>
+                            <p class="text-gray-400 mb-6 leading-relaxed">
+                                버추얼 아이돌 '코요 템페스트' 생일 이벤트가 개최 13일 전 전면 취소 위기. 팬덤 신뢰 회복 및 카지노 컨셉 게이미피케이션으로 만족도 95% 달성. "주최진 덕분에" 언급 쇄도.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-[#ff00aa]/10 border border-[#ff00aa] rounded-full text-xs">Event Planning</span>
+                                <span class="px-3 py-1 bg-[#ff00aa]/10 border border-[#ff00aa] rounded-full text-xs">Fandom Strategy</span>
+                                <span class="px-3 py-1 bg-[#ff00aa]/10 border border-[#ff00aa] rounded-full text-xs">Gamification</span>
+                                <span class="px-3 py-1 bg-[#ff00aa]/10 border border-[#ff00aa] rounded-full text-xs">Brand Design</span>
+                                <span class="px-3 py-1 bg-[#ff00aa]/10 border border-[#ff00aa] rounded-full text-xs">Crisis Pivot</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800&auto=format&fit=crop" alt="Music Festival">
-                        <div class="image-overlay">
-                            <div>
-                                <h4 class="font-bold">Music Festival</h4>
-                                <p class="text-xs text-gray-300">Crowd Management</p>
+                        <div class="w-full md:w-1/3 flex flex-col justify-center gap-4">
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#ff00aa]">13일</div>
+                                <div class="text-xs text-gray-400">완성 기간</div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop" alt="Digital Strategy">
-                        <div class="image-overlay">
-                            <div>
-                                <h4 class="font-bold">Digital Strategy</h4>
-                                <p class="text-xs text-gray-300">Data Analytics</p>
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#ff00aa]">95%</div>
+                                <div class="text-xs text-gray-400">팬 만족도</div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=800&auto=format&fit=crop" alt="Creative Direction">
-                        <div class="image-overlay">
-                            <div>
-                                <h4 class="font-bold">Creative Direction</h4>
-                                <p class="text-xs text-gray-300">Brand Identity</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=800&auto=format&fit=crop" alt="AI Art Generation">
-                        <div class="image-overlay">
-                            <div>
-                                <h4 class="font-bold">AI Art Generation</h4>
-                                <p class="text-xs text-gray-300">Midjourney Art</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop" alt="Social Media">
-                        <div class="image-overlay">
-                            <div>
-                                <h4 class="font-bold">Social Media</h4>
-                                <p class="text-xs text-gray-300">Campaign Success</p>
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#ff00aa]">100%</div>
+                                <div class="text-xs text-gray-400">신뢰 회복</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 소셜 미디어 임베드 -->
-            <div class="mt-20 fade-in">
-                <h3 class="text-2xl font-bold mb-8 text-[#bd00ff] font-cyber">Social Media Highlights</h3>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <!-- Instagram 스타일 카드 1 -->
-                    <div class="border border-white/10 rounded-2xl overflow-hidden bg-gray-900/50 hover:border-[#ff00aa] transition-colors">
-                        <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop" alt="Instagram Post 1" class="w-full aspect-square object-cover">
-                        <div class="p-4">
-                            <div class="flex items-center gap-2 mb-2">
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#ff00aa] to-[#0affff]"></div>
-                                <span class="font-bold text-sm">@kjy.portfolio</span>
+            <!-- 예술대학교 -->
+            <div class="mb-24 fade-in">
+                <div class="project-card p-8 md:p-12 rounded-3xl bg-black/50" onclick="openModal('university')">
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="w-full md:w-2/3">
+                            <div class="text-[#bd00ff] font-mono text-sm mb-2">2022.03 ~ 2024.03 | 2년</div>
+                            <h3 class="text-3xl md:text-5xl font-black mb-6 text-[#bd00ff]">예술대학교</h3>
+                            <div class="text-xl font-bold mb-4">국제교류원 & 디지털 마케팅 기획</div>
+                            <p class="text-gray-400 mb-6 leading-relaxed">
+                                홈페이지·SNS 리브랜딩 프로젝트 총괄 및 산학협력 B2B 영업. 혁신사업 우수상 수상. 현역 영화감독·음악감독 등 업계 네트워크 확보.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-[#bd00ff]/10 border border-[#bd00ff] rounded-full text-xs">Rebranding</span>
+                                <span class="px-3 py-1 bg-[#bd00ff]/10 border border-[#bd00ff] rounded-full text-xs">B2B Sales</span>
+                                <span class="px-3 py-1 bg-[#bd00ff]/10 border border-[#bd00ff] rounded-full text-xs">Partnership</span>
+                                <span class="px-3 py-1 bg-[#bd00ff]/10 border border-[#bd00ff] rounded-full text-xs">Project Mgmt</span>
                             </div>
-                            <p class="text-xs text-gray-400">✨ Behind the scenes of our latest campaign...</p>
-                            <div class="flex gap-4 mt-3 text-xs text-gray-500">
-                                <span>❤️ 1.2K</span>
-                                <span>💬 89</span>
+                        </div>
+                        <div class="w-full md:w-1/3 flex flex-col justify-center gap-4">
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#bd00ff]">🏆</div>
+                                <div class="text-xs text-gray-400">혁신사업 우수상</div>
+                            </div>
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#bd00ff]">500만</div>
+                                <div class="text-xs text-gray-400">보조금 정산</div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Instagram 스타일 카드 2 -->
-                    <div class="border border-white/10 rounded-2xl overflow-hidden bg-gray-900/50 hover:border-[#0affff] transition-colors">
-                        <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=800&auto=format&fit=crop" alt="Instagram Post 2" class="w-full aspect-square object-cover">
-                        <div class="p-4">
-                            <div class="flex items-center gap-2 mb-2">
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#0affff] to-[#bd00ff]"></div>
-                                <span class="font-bold text-sm">@kjy.portfolio</span>
-                            </div>
-                            <p class="text-xs text-gray-400">🎪 Festival season highlights! #EventMarketing</p>
-                            <div class="flex gap-4 mt-3 text-xs text-gray-500">
-                                <span>❤️ 2.5K</span>
-                                <span>💬 142</span>
+            <!-- 모랑공방 -->
+            <div class="mb-24 fade-in">
+                <div class="project-card p-8 md:p-12 rounded-3xl bg-black/50" onclick="openModal('morang')">
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="w-full md:w-2/3">
+                            <div class="text-[#ffae00] font-mono text-sm mb-2">2019.10 ~ 2021.10 | 2년</div>
+                            <h3 class="text-3xl md:text-5xl font-black mb-6 text-[#ffae00]">모랑공방</h3>
+                            <div class="text-xl font-bold mb-4">대표 (Founder) | 팬덤 기반 도자 브랜드</div>
+                            <p class="text-gray-400 mb-6 leading-relaxed">
+                                K-POP 팬덤 타겟 도자 아트토이 '돌쥬·호라믹' 브랜드 운영. Pre-order 3차 완판, 재고 리스크 제로. UGC 마케팅으로 광고비 0원. 타팬덤 자발적 문의 유입.
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-[#ffae00]/10 border border-[#ffae00] rounded-full text-xs">Brand Founding</span>
+                                <span class="px-3 py-1 bg-[#ffae00]/10 border border-[#ffae00] rounded-full text-xs">Fandom Data</span>
+                                <span class="px-3 py-1 bg-[#ffae00]/10 border border-[#ffae00] rounded-full text-xs">UGC Marketing</span>
+                                <span class="px-3 py-1 bg-[#ffae00]/10 border border-[#ffae00] rounded-full text-xs">Zero Inventory</span>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Instagram 스타일 카드 3 -->
-                    <div class="border border-white/10 rounded-2xl overflow-hidden bg-gray-900/50 hover:border-[#bd00ff] transition-colors">
-                        <img src="https://images.unsplash.com/photo-1635241161466-541f065683ba?q=80&w=800&auto=format&fit=crop" alt="Instagram Post 3" class="w-full aspect-square object-cover">
-                        <div class="p-4">
-                            <div class="flex items-center gap-2 mb-2">
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#bd00ff] to-[#ff00aa]"></div>
-                                <span class="font-bold text-sm">@kjy.portfolio</span>
+                        <div class="w-full md:w-1/3 flex flex-col justify-center gap-4">
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#ffae00]">3차</div>
+                                <div class="text-xs text-gray-400">완판 달성</div>
                             </div>
-                            <p class="text-xs text-gray-400">🤖 AI-powered creativity in action #GenAI</p>
-                            <div class="flex gap-4 mt-3 text-xs text-gray-500">
-                                <span>❤️ 3.1K</span>
-                                <span>💬 203</span>
+                            <div class="stat-card p-6 rounded-xl">
+                                <div class="text-3xl font-black text-[#ffae00]">0원</div>
+                                <div class="text-xs text-gray-400">재고+마케팅비</div>
                             </div>
                         </div>
                     </div>
@@ -404,167 +366,139 @@
             </div>
         </section>
 
-        <!-- JOURNEY & SKILLS -->
-        <section id="journey" class="py-24 px-6 md:px-24 bg-gradient-to-b from-gray-900 to-black">
-            <h2 class="text-4xl md:text-6xl font-black mb-24 text-center font-cyber">JOURNEY & SKILLS</h2>
-            <div class="flex flex-col md:flex-row gap-12 md:gap-24">
-                <!-- Timeline -->
-                <div class="w-full md:w-1/3 space-y-12 border-l border-white/20 pl-8 fade-in">
-                    <div class="relative group">
-                        <div class="absolute -left-[37px] top-1 w-4 h-4 rounded-full bg-gray-800 group-hover:bg-[#0affff] transition-colors"></div>
-                        <div class="font-mono text-[#0affff] text-sm mb-1">2025</div>
-                        <div class="text-2xl font-bold mb-2">Strategist</div>
-                        <div class="text-gray-400 text-sm">Next Level Digital Maker</div>
+        <!-- SKILLS & EXPERTISE -->
+        <section id="skills" class="py-24 px-6 md:px-24 bg-black">
+            <h2 class="text-4xl md:text-6xl font-black mb-16 text-center font-cyber">CORE EXPERTISE</h2>
+            
+            <div class="max-w-5xl mx-auto space-y-8 fade-in">
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-[#0affff]">Crisis & Risk Management</span>
+                        <span class="text-sm text-gray-400">Expert</span>
                     </div>
-                    <div class="relative group">
-                        <div class="absolute -left-[37px] top-1 w-4 h-4 rounded-full bg-gray-800 group-hover:bg-[#0affff] transition-colors"></div>
-                        <div class="font-mono text-[#0affff] text-sm mb-1">2023</div>
-                        <div class="text-2xl font-bold mb-2">Marketer</div>
-                        <div class="text-gray-400 text-sm">수원문화재단 홍보 담당</div>
-                    </div>
-                    <div class="relative group">
-                        <div class="absolute -left-[37px] top-1 w-4 h-4 rounded-full bg-gray-800 group-hover:bg-[#0affff] transition-colors"></div>
-                        <div class="font-mono text-[#0affff] text-sm mb-1">2021</div>
-                        <div class="text-2xl font-bold mb-2">Researcher</div>
-                        <div class="text-gray-400 text-sm">Observer Economy 연구</div>
-                    </div>
-                    <div class="relative group">
-                        <div class="absolute -left-[37px] top-1 w-4 h-4 rounded-full bg-gray-800 group-hover:bg-[#0affff] transition-colors"></div>
-                        <div class="font-mono text-[#0affff] text-sm mb-1">2020</div>
-                        <div class="text-2xl font-bold mb-2">Founder</div>
-                        <div class="text-gray-400 text-sm">모랑공방 브랜드 런칭</div>
-                    </div>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 95%"></div></div>
+                    <p class="text-xs text-gray-500 mt-2">51만 명 축제 무사고 운영 | 소음/우천 민원 즉시 해결 | 시스템 오류 대응</p>
                 </div>
 
-                <!-- Skills Grid -->
-                <div class="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6 fade-in">
-                    <div class="p-8 border border-white/10 rounded-2xl hover:bg-white/5 transition-all group hover-trigger">
-                        <div class="text-[#0affff] mb-6"><i data-lucide="target" width="32" height="32"></i></div>
-                        <h3 class="text-xl font-bold mb-4">Crisis & IMC</h3>
-                        <p class="text-sm text-gray-400">52만 관객 축제 운영, 돌발 리스크 통제, 이해관계자 조율</p>
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-[#ff00aa]">Growth Marketing (AI-Powered)</span>
+                        <span class="text-sm text-gray-400">Advanced</span>
                     </div>
-                    <div class="p-8 border border-white/10 rounded-2xl hover:bg-white/5 transition-all group hover-trigger">
-                        <div class="text-[#8b5cf6] mb-6"><i data-lucide="trending-up" width="32" height="32"></i></div>
-                        <h3 class="text-xl font-bold mb-4">Data Strategy</h3>
-                        <p class="text-sm text-gray-400">Observer Economy 분석, 팬덤 행동 연구, ESG 모델 통합</p>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div>
+                    <p class="text-xs text-gray-500 mt-2">제로예산 SNS 55배 성장 | Midjourney·Runway·CapCut | 팔로워 36% 증가</p>
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-[#bd00ff]">Fandom Strategy & Data Analysis</span>
+                        <span class="text-sm text-gray-400">Expert</span>
                     </div>
-                    <div class="p-8 border border-white/10 rounded-2xl hover:bg-white/5 transition-all group hover-trigger">
-                        <div class="text-[#ff00aa] mb-6"><i data-lucide="sparkles" width="32" height="32"></i></div>
-                        <h3 class="text-xl font-bold mb-4">Gen AI</h3>
-                        <p class="text-sm text-gray-400">프롬프트 엔지니어링, 작업 효율 70% 증대, 저작권 프리 IP</p>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 95%"></div></div>
+                    <p class="text-xs text-gray-500 mt-2">10년+ 팬덤 경험 | 트위터 해시태그 수요 예측 | Observer Economy 연구</p>
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-[#ffae00]">Stakeholder Management</span>
+                        <span class="text-sm text-gray-400">Advanced</span>
                     </div>
-                    <div class="p-8 border border-white/10 rounded-2xl hover:bg-white/5 transition-all group hover-trigger">
-                        <div class="text-[#ffae00] mb-6"><i data-lucide="book-open" width="32" height="32"></i></div>
-                        <h3 class="text-xl font-bold mb-4">Administration</h3>
-                        <p class="text-sm text-gray-400">예술-행정 언어 번역, 공공기관 문서화, 문화행정 전공</p>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 88%"></div></div>
+                    <p class="text-xs text-gray-500 mt-2">크로스팀 조율 (홍보·시스템·총무·작가) | 계약 변경 Win-Win 합의</p>
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-[#0affff]">Admin & Operation</span>
+                        <span class="text-sm text-gray-400">Expert</span>
                     </div>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 92%"></div></div>
+                    <p class="text-xs text-gray-500 mt-2">티켓 시스템 단독 운용 | e나라도움 정산 | 문화행정 전공</p>
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-[#ff00aa]">Event Planning & Execution</span>
+                        <span class="text-sm text-gray-400">Expert</span>
+                    </div>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 93%"></div></div>
+                    <p class="text-xs text-gray-500 mt-2">13일 만에 이벤트 완성 | 게이미피케이션 설계 | 굿즈 발주 총괄</p>
+                </div>
+            </div>
+
+            <!-- Tool Stack -->
+            <div class="max-w-5xl mx-auto mt-24 fade-in">
+                <h3 class="text-2xl font-bold mb-8 text-center">TECH STACK</h3>
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">Midjourney</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">Runway</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">CapCut</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">ChatGPT</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">Figma</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">Photoshop</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">e나라도움</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">인터파크 Admin</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-sm">Twitter Analytics</span>
                 </div>
             </div>
         </section>
 
-        <!-- CONTACT & AI -->
-        <section id="contact" class="py-24 px-6 md:px-24 bg-black text-center relative overflow-hidden">
-            <div class="max-w-3xl mx-auto relative z-10 fade-in">
-                <h2 class="text-5xl md:text-8xl font-black mb-8 leading-tight font-cyber">HAVE AN IDEA?</h2>
+        <!-- CONTACT -->
+        <section id="contact" class="py-24 px-6 md:px-24 bg-gradient-to-b from-black to-gray-900 text-center">
+            <div class="max-w-3xl mx-auto fade-in">
+                <h2 class="text-5xl md:text-8xl font-black mb-8 leading-tight font-cyber">LET'S CONNECT</h2>
                 <p class="text-xl text-gray-400 mb-12">
-                    Let's build tomorrow, today. <br/> Hit <span class="text-[#0affff]">Enter</span> or type below.
+                    위기를 기회로, 데이터를 전략으로.<br/>
+                    함께 만들어갈 다음 프로젝트를 기대합니다.
                 </p>
-                <div class="relative group">
-                    <input type="text" id="ai-input-main" 
-                        class="w-full bg-transparent border-b-2 border-gray-700 text-2xl md:text-4xl py-4 text-center focus:outline-none focus:border-[#0affff] transition-colors placeholder:text-gray-800 text-white"
-                        placeholder="What's your next big thing?"
-                        onkeypress="if(event.key === 'Enter') generateAiIdea('main')">
-                    <i data-lucide="send" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-700 group-hover:text-[#0affff] transition-colors"></i>
-                </div>
-                <div id="ai-result-main" class="mt-12 text-left hidden">
-                    <div class="p-8 border border-[#0affff]/30 bg-[#0affff]/5 rounded-2xl">
-                        <div class="text-[#0affff] text-sm font-bold mb-4 uppercase tracking-widest">AI Suggestion</div>
-                        <p class="text-lg leading-relaxed whitespace-pre-wrap" id="ai-text-main"></p>
-                    </div>
+                <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                    <a href="mailto:your.email@example.com" class="px-8 py-4 bg-[#0affff] text-black font-bold rounded-full hover:shadow-[0_0_30px_rgba(10,255,255,0.5)] transition-all flex items-center gap-2">
+                        <i data-lucide="mail" width="20"></i>
+                        EMAIL ME
+                    </a>
+                    <a href="https://linkedin.com/in/yourprofile" target="_blank" class="px-8 py-4 border border-[#0affff] text-[#0affff] font-bold rounded-full hover:bg-[#0affff] hover:text-black transition-all flex items-center gap-2">
+                        <i data-lucide="linkedin" width="20"></i>
+                        LINKEDIN
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- Footer -->
+        <!-- FOOTER -->
         <footer class="py-12 px-6 border-t border-white/10 bg-black">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="text-sm text-gray-500">
-                    © 2025 Kim Jiyeon. All rights reserved.
+            <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+                <div class="mb-4">
+                    <strong class="text-white font-cyber text-lg">KIM JIYEON</strong> | Digital Strategist & Crisis Manager
                 </div>
-                <div class="flex gap-6">
-                    <a href="#" class="text-gray-500 hover:text-[#0affff] transition-colors hover-trigger">
-                        <i data-lucide="linkedin" width="20"></i>
-                    </a>
-                    <a href="#" class="text-gray-500 hover:text-[#0affff] transition-colors hover-trigger">
-                        <i data-lucide="instagram" width="20"></i>
-                    </a>
-                    <a href="#" class="text-gray-500 hover:text-[#0affff] transition-colors hover-trigger">
-                        <i data-lucide="mail" width="20"></i>
-                    </a>
+                <div class="mb-4">
+                    51만 명 무사고 운영 • SNS 55배 성장 • 13일 만에 이벤트 완성
+                </div>
+                <div>
+                    © 2025 Kim Jiyeon. All rights reserved.
                 </div>
             </div>
         </footer>
     </main>
 
-    <!-- 8. 모달 (프로젝트 상세) -->
-    <div id="project-modal" class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-12 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
-        <div class="absolute top-8 right-8 cursor-pointer z-50 p-2 bg-white/10 rounded-full hover:bg-white hover:text-black transition-all" onclick="closeProjectModal()">
-            <i data-lucide="x" width="24"></i>
-        </div>
-        <div class="max-w-5xl w-full h-full overflow-y-auto bg-[#111] border border-white/10 rounded-3xl p-8 md:p-16 relative">
-            <div id="modal-category" class="text-[#0affff] font-mono mb-4">CATEGORY</div>
-            <h2 id="modal-title" class="text-4xl md:text-6xl font-black mb-12 font-cyber">TITLE</h2>
-            
-            <!-- 모달 내 이미지 갤러리 -->
-            <div id="modal-gallery" class="mb-12 grid grid-cols-2 md:grid-cols-3 gap-4"></div>
-            
-            <div class="grid md:grid-cols-2 gap-12">
-                <div class="space-y-8">
-                    <div>
-                        <h3 class="text-sm text-gray-500 font-bold mb-2 uppercase">Context</h3>
-                        <p id="modal-context" class="text-xl">...</p>
-                    </div>
-                    <div>
-                        <h3 class="text-sm text-gray-500 font-bold mb-2 uppercase">Solution</h3>
-                        <p id="modal-solution" class="text-gray-300">...</p>
-                    </div>
+    <!-- 모달 -->
+    <div id="modal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl hidden opacity-0 transition-opacity duration-300">
+        <div class="h-full overflow-y-auto">
+            <div class="min-h-screen flex items-center justify-center p-4 md:p-12">
+                <div class="max-w-6xl w-full bg-[#0a0a0a] border border-white/20 rounded-3xl p-8 md:p-16 relative">
+                    <button onclick="closeModal()" class="absolute top-6 right-6 p-2 bg-white/10 rounded-full hover:bg-white hover:text-black transition-all">
+                        <i data-lucide="x" width="24"></i>
+                    </button>
+                    
+                    <div id="modal-content"></div>
                 </div>
-                <div class="space-y-8 text-sm font-mono text-gray-400">
-                    <div class="flex justify-between border-b border-gray-800 pb-2"><span>Year</span><span id="modal-year" class="text-white">2025</span></div>
-                    <div class="flex justify-between border-b border-gray-800 pb-2"><span>Role</span><span class="text-white">Planning & Design</span></div>
-                    <div class="flex justify-between border-b border-gray-800 pb-2"><span>Impact</span><span id="modal-impact" class="text-white">High</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 9. AI 모달 -->
-    <div id="ai-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl flex items-center justify-center p-4 hidden">
-        <div class="bg-[#111] border border-white/20 w-full max-w-2xl rounded-2xl p-8 relative shadow-2xl shadow-[#0affff]/20">
-            <i data-lucide="x" class="absolute top-6 right-6 cursor-pointer hover:text-[#0affff]" onclick="closeAiModal()"></i>
-            <div class="flex items-center gap-4 mb-8">
-                <div class="w-12 h-12 rounded-full bg-[#0affff] flex items-center justify-center text-black"><i data-lucide="bot"></i></div>
-                <div><h3 class="text-2xl font-bold">AI CREATIVE LAB</h3><p class="text-sm text-gray-400">Project Consultant Persona</p></div>
-            </div>
-            <div class="h-64 overflow-y-auto bg-black/50 rounded-xl p-6 mb-6 border border-white/5 space-y-4">
-                <div class="bg-gray-800/50 p-4 rounded-lg rounded-tl-none self-start max-w-[80%] text-sm">
-                    안녕하세요! 김지연 마케터의 AI 페르소나입니다.<br>기획하고 싶은 프로젝트 주제를 입력하시면 솔루션을 제안해드립니다.
-                </div>
-                <div id="ai-chat-result" class="bg-[#0affff]/10 border border-[#0affff]/30 p-4 rounded-lg rounded-tl-none self-start max-w-[90%] text-sm leading-relaxed hidden"></div>
-                <div id="ai-loading" class="text-xs text-[#0affff] animate-pulse hidden">AI Thinking...</div>
-            </div>
-            <div class="relative">
-                <input type="text" id="ai-input-modal" class="w-full bg-gray-900 border border-white/10 rounded-full px-6 py-4 pr-12 focus:border-[#0affff] focus:outline-none transition-colors text-white" placeholder="Ex. 전통시장 활성화 방안..." onkeypress="if(event.key === 'Enter') generateAiIdea('modal')">
-                <button onclick="generateAiIdea('modal')" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#0affff] text-black rounded-full hover:scale-110 transition-transform"><i data-lucide="send" width="16"></i></button>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. 아이콘 초기화
         lucide.createIcons();
 
-        // 2. Three.js 배경 효과
+        // Three.js 배경
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -602,7 +536,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // 3. 커스텀 커서
+        // 커스텀 커서
         const cursorDot = document.getElementById('cursor-dot');
         const cursorOutline = document.getElementById('cursor-outline');
         window.addEventListener('mousemove', (e) => {
@@ -610,25 +544,13 @@
             cursorOutline.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
         });
 
-        document.querySelectorAll('.hover-trigger').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorOutline.style.transform += ' scale(2.5)';
-                cursorDot.style.opacity = '0';
-            });
-            el.addEventListener('mouseleave', () => {
-                cursorOutline.style.transform = cursorOutline.style.transform.replace(' scale(2.5)', '');
-                cursorDot.style.opacity = '1';
-            });
-        });
-
-        // 4. 스크롤 진행 바
+        // 스크롤 진행 바 & Fade In
         window.addEventListener('scroll', () => {
             const scrollTop = document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (scrollTop / height) * 100;
             document.getElementById('progress-bar').style.width = scrolled + "%";
             
-            // Fade In 효과
             document.querySelectorAll('.fade-in').forEach(el => {
                 if(el.getBoundingClientRect().top < window.innerHeight - 100) {
                     el.classList.add('visible');
@@ -636,7 +558,7 @@
             });
         });
 
-        // 5. 메뉴 토글
+        // 메뉴 토글
         const menu = document.getElementById('menu-overlay');
         function toggleMenu() {
             if(menu.classList.contains('hidden')) {
@@ -648,119 +570,112 @@
             }
         }
 
-        // 6. 프로젝트 데이터 및 모달
-        const projectData = {
-            '01': { 
-                title: 'KKOJILLAND', 
-                cat: 'FANDOM', 
-                year: '2025', 
-                context: '버추얼 아이돌 팬덤의 니즈를 반영한 오프라인 행사 기획.', 
-                solution: '카지노 컨셉의 게이미피케이션 요소 도입 및 굿즈 제작.',
-                impact: '참여자 만족도 95%',
-                images: [
-                    'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=600',
-                    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600',
-                    'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=600'
-                ]
+        // 모달 데이터
+        const modalData = {
+            suwon: {
+                title: '수원문화재단',
+                period: '2025.05 ~ 2025.11',
+                role: '관광육성팀 주임 | Ticket Manager & 축제 운영 총괄',
+                summary: '51만 명 방문 대규모 축제 16일 무사고 운영. 티켓 시스템 완결성 확보 및 제로 예산 SNS 전략으로 조회수 55배 증가. 신규 입사 7개월 만에 모범직원 표창장 수상.',
+                achievements: [
+                    { title: '대규모 현장 통제', desc: '16일간 51만 명 무사고 운영. 야간 축제 특성상 퇴근시간대 인파 집중 위험 최고조 상황에서 완벽한 안전 관리.' },
+                    { title: '우천 취소 민원 폭주 해결', desc: '정부 시스템 다운으로 당일 4~5시 취소 결정. 전국 출발 준비 중 관람객 혼란. 홍보팀 긴급 협조 + SNS 실시간 응대로 민원 최소화.' },
+                    { title: '소음 민원 1~2일 내 해결', desc: '인터랙티브 작품 소음 → 상인 민원 + 경찰 출동. 현장 분석 영상 제작 → 시스템팀·작가님 전달 → 빠른 조정으로 상인 만족도 상승.' },
+                    { title: '계약 변경 Win-Win 조율', desc: '우천 취소로 계약금 1/3 감소. 업체 손실 발생 위기 → 팀장 협의 후 평일 일당 조정안 제시 → 관계 유지 성공.' },
+                    { title: 'AI 마케팅 혁신', desc: '예산 60% 삭감 (30억→12억) 상황. Midjourney·Runway로 홍보물 제작 (비용 0원) → 평균 조회수 6배 (1K→6K), 최고 5.5만 회 (55배).' },
+                    { title: 'SNS 트래픽 전략', desc: '현장 감각 발휘. 개막식 관람객 반응 열기 즉시 포착 → 숏폼 촬영·업로드 → 재단 역대 최고 5.5만 조회수. 이 방식이 재단 전체로 확산되어 팔로워 36% 증가.' },
+                    { title: '모범직원 표창장', desc: '신규 입사 7개월 만에 축제 운영 성과 인정받아 표창장 수상 (2025.11).' }
+                ],
+                skills: ['Crisis Management', 'Risk Control', 'AI Marketing', 'Ticket System Admin', 'Stakeholder Coordination', 'SNS Strategy', 'Midjourney', 'Runway', 'CapCut']
             },
-            '02': { 
-                title: 'SUWON MEDIA', 
-                cat: 'MEGA EVENT', 
-                year: '2025', 
-                context: '대형 축제 중 우천 발생 위기 상황.', 
-                solution: '우천을 마케팅 포인트로 활용, 상인 이탈 방지 데이터 솔루션.',
-                impact: '52만 관객 동원',
-                images: [
-                    'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=600',
-                    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=600',
-                    'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=600'
-                ]
+            kkojilland: {
+                title: '꼬질랜드 - 버추얼 IP 이벤트',
+                period: '2024.11 (13일 프로젝트)',
+                role: '총괄 기획 & 디자인 총괄',
+                summary: '버추얼 아이돌 코요 템페스트 생일 이벤트가 개최 13일 전 1차 주최자 잠적으로 전면 취소 위기. 팬덤 신뢰 회복 및 카지노 컨셉 게이미피케이션으로 만족도 95% 달성.',
+                achievements: [
+                    { title: '13일 만의 기적', desc: '통상 굿즈 발주 3~4주 소요. 장소 대관·협력진 재컨택·전프레 발주·콘텐츠 재기획 13일 내 완수.' },
+                    { title: '팬덤 신뢰 회복', desc: '"제대로 못 할 거면 하지 마라" DM 항의 빗발침 → 투명한 진행 상황 공유 + 고퀄리티 결과물로 신뢰 회복.' },
+                    { title: '컨셉 전략', desc: '팬덤 내 유행 밈 (코요의 견안인사 대기 중 유사도박 콘텐츠) → 오프라인 카지노 컨셉 체험으로 전환.' },
+                    { title: '총괄 디자인', desc: '꼬질코인 이미지, 계정 배너, 찌라시, 포스터, 명함, 전프레 굿즈 디자인 총괄. 13일 내 모든 제작물 완성.' },
+                    { title: '팬 만족도 극대화', desc: '"다녀본 오타쿠 행사 중 최고" 후기 다수. 일반적으로 IP만 언급하는데, 이례적으로 "주최진 덕분에" 감사 후기 쇄도.' },
+                    { title: '코요 본인 언급', desc: '행사 후 방송(치지직)에서 코요 템페스트 본인이 해당 콘텐츠 지속 언급. 브랜드 파워 입증.' },
+                    { title: '연속 기획 확정', desc: '동일 주최진으로 크리스마스 파티·연말정산 이벤트 진행 예정. 미참여 팬들의 "내년 꼭 가고 싶다" 자발적 댓글 다수.' }
+                ],
+                skills: ['Event Planning', 'Fandom Strategy', 'Gamification', 'Brand Design', 'Crisis Pivot', 'Stakeholder Mgmt', 'Figma', 'Photoshop']
             },
-            '03': { 
-                title: 'BAEKHO', 
-                cat: 'AI ART', 
-                year: '2024', 
-                context: 'K-POP 아티스트의 청각적 서사 시각화 필요.', 
-                solution: '생성형 AI 프롬프트 엔지니어링으로 초현실적 아트워크 제작.',
-                impact: '70% 효율 증대',
-                images: [
-                    'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=600',
-                    'https://images.unsplash.com/photo-1635241161466-541f065683ba?q=80&w=600',
-                    'https://images.unsplash.com/photo-1614149162883-504ce4d13909?q=80&w=600'
-                ]
+            university: {
+                title: '예술대학교',
+                period: '2022.03 ~ 2024.03 (2년)',
+                role: '국제교류원 & 디지털 마케팅 기획',
+                summary: '홈페이지·SNS 리브랜딩 프로젝트 총괄 및 산학협력 B2B 영업. 혁신사업 우수상 수상. 현역 영화감독·음악감독 등 업계 네트워크 확보.',
+                achievements: [
+                    { title: '리브랜딩 프로젝트 총괄', desc: '학교 홈페이지·SNS 톤앤매너 리뉴얼. 디자인 에이전시 선정부터 결과물 검수까지 주 2회 미팅. 3차 수정안까지 브랜드 일관성 확보.' },
+                    { title: '산학협력 B2B 영업', desc: '교수님과 함께 기업 컨택. 예술대 학생 콘텐츠(머지리티 등)를 기업 니즈와 매칭하여 협업 프로젝트 성사.' },
+                    { title: '혁신사업 우수상', desc: '담당 혁신사업이 대학혁신사업대회 우수상 수상 (2022년). 사업 설계·기획 단계부터 참여.' },
+                    { title: '지역혁신사업 운영', desc: '대학-지역 상권 연계 프로젝트 "아트카페" 기획·운영. 서대문구청·상인회·학생 간 이해관계 조율 및 500만 원 보조금 정산.' },
+                    { title: '업계 네트워크', desc: '현역 영화감독·음악감독·제작자 등 교수진 및 초빙 인사 포럼·특강 의전. 업계 리더와의 커뮤니케이션 스킬 함양.' }
+                ],
+                skills: ['Rebranding', 'B2B Sales', 'Partnership', 'Project Management', 'Stakeholder Coordination', 'Budget Management']
+            },
+            morang: {
+                title: '모랑공방',
+                period: '2019.10 ~ 2021.10 (2년)',
+                role: '대표 (Founder) | 팬덤 기반 도자 브랜드',
+                summary: 'K-POP 팬덤 타겟 도자 아트토이 "돌쥬·호라믹" 브랜드 운영. Pre-order 3차 완판, 재고 리스크 제로. UGC 마케팅으로 광고비 0원.',
+                achievements: [
+                    { title: '팬덤 데이터 기반 상품 기획', desc: '10년+ 아이돌 팬 경험 체화. 별도 시장조사 없이도 "지금 팬들이 원하는 것" 정확히 파악 가능.' },
+                    { title: '트위터 수요 예측', desc: '해시태그 추적으로 팬들 니즈 키워드 실시간 모니터링. 리트윗/좋아요 수로 구매 전환 가능성 측정. 화제성 정점일 때 Pre-order 오픈.' },
+                    { title: 'UGC 마케팅 (광고비 0원)', desc: '돌쥬 전용 SNS 계정으로 "여행 스토리" 콘텐츠. 고객들이 돌쥬를 여행지에 데리고 가서 SNS 인증. "나보다 돌쥬가 여행 더 많이" 자발적 바이럴.' },
+                    { title: 'Pre-order 3차 완판', desc: '선주문 후제작 시스템으로 재고 리스크 제로. 점진적 성장 (1차→2차→3차 연속 완판).' },
+                    { title: '타팬덤 확산', desc: 'BTS 팬덤 등 타 팬덤에서 자발적 제작 문의. 브랜드 정체성 우선하여 거절했지만 브랜드 파워 입증.' },
+                    { title: '팬데믹 대응', desc: '코로나19 위기 시 오프라인 클래스를 "비대면 키트" 사업으로 신속히 전환. 매출 방어 성공.' },
+                    { title: '정부 지원사업', desc: '청년창업 지원사업 선정 및 e나라도움 행정 정산 완료.' }
+                ],
+                skills: ['Brand Founding', 'Fandom Data Analysis', 'UGC Marketing', 'Pre-order Strategy', 'Twitter Analytics', 'Crisis Pivot', 'e나라도움']
             }
         };
 
-        const pModal = document.getElementById('project-modal');
-        function openProjectModal(id) {
-            const data = projectData[id];
-            document.getElementById('modal-title').innerText = data.title;
-            document.getElementById('modal-category').innerText = data.cat;
-            document.getElementById('modal-year').innerText = data.year;
-            document.getElementById('modal-context').innerText = data.context;
-            document.getElementById('modal-solution').innerText = data.solution;
-            document.getElementById('modal-impact').innerText = data.impact;
+        function openModal(id) {
+            const data = modalData[id];
+            const content = `
+                <div class="text-[#0affff] font-mono text-sm mb-2">${data.period}</div>
+                <h2 class="text-4xl md:text-6xl font-black mb-4 font-cyber">${data.title}</h2>
+                <div class="text-xl font-bold mb-8 text-gray-300">${data.role}</div>
+                <p class="text-lg text-gray-400 mb-12 leading-relaxed">${data.summary}</p>
+                
+                <h3 class="text-2xl font-bold mb-6 text-[#0affff]">주요 성과</h3>
+                <div class="space-y-6 mb-12">
+                    ${data.achievements.map(a => `
+                        <div class="border-l-4 border-[#0affff] pl-6 py-2">
+                            <h4 class="font-bold text-lg mb-2">${a.title}</h4>
+                            <p class="text-gray-400 text-sm">${a.desc}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <h3 class="text-2xl font-bold mb-6 text-[#0affff]">Skills & Tools</h3>
+                <div class="flex flex-wrap gap-2">
+                    ${data.skills.map(s => `<span class="px-3 py-1 bg-[#0affff]/10 border border-[#0affff] rounded-full text-sm">${s}</span>`).join('')}
+                </div>
+            `;
             
-            // 이미지 갤러리 추가
-            const gallery = document.getElementById('modal-gallery');
-            gallery.innerHTML = '';
-            data.images.forEach(img => {
-                const imgEl = document.createElement('img');
-                imgEl.src = img;
-                imgEl.className = 'w-full h-32 object-cover rounded-lg border border-white/10';
-                gallery.appendChild(imgEl);
-            });
-            
-            pModal.classList.remove('hidden');
+            document.getElementById('modal-content').innerHTML = content;
+            const modal = document.getElementById('modal');
+            modal.classList.remove('hidden');
             setTimeout(() => {
-                pModal.classList.remove('opacity-0');
+                modal.classList.remove('opacity-0');
                 lucide.createIcons();
             }, 10);
         }
-        function closeProjectModal() {
-            pModal.classList.add('opacity-0');
-            setTimeout(() => pModal.classList.add('hidden'), 300);
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // 7. AI 모달
-        const aiModal = document.getElementById('ai-modal');
-        function openAiModal() { 
-            aiModal.classList.remove('hidden'); 
-            setTimeout(() => lucide.createIcons(), 10);
-        }
-        function closeAiModal() { aiModal.classList.add('hidden'); }
-
-        // 8. AI 생성 시뮬레이션
-        function generateAiIdea(type) {
-            const inputId = type === 'main' ? 'ai-input-main' : 'ai-input-modal';
-            const resultId = type === 'main' ? 'ai-result-main' : 'ai-chat-result';
-            const textId = type === 'main' ? 'ai-text-main' : 'ai-chat-result';
-            const loadingId = 'ai-loading';
-            
-            const inputVal = document.getElementById(inputId).value;
-            if(!inputVal) return;
-
-            if(type === 'modal') {
-                document.getElementById(loadingId).classList.remove('hidden');
-                document.getElementById(resultId).classList.add('hidden');
-            }
-
-            // 시뮬레이션 딜레이
-            setTimeout(() => {
-                const dummyResponse = `[AI 분석 결과: ${inputVal}]\n\n1. 핵심 타겟: 경험 중시형 2030 세대\n2. 위기 요인: 오프라인 트래픽 감소\n3. 솔루션: "관전 경제" 모델을 도입하여 비참여자도 즐길 수 있는 '게이미피케이션' 요소 추가. 팝업스토어 대신 '세계관 체험관'으로 리브랜딩 추천.\n4. 예상 효과: 참여율 40% 증가, SNS 확산 효과`;
-                
-                if(type === 'modal') {
-                    document.getElementById(loadingId).classList.add('hidden');
-                    document.getElementById(resultId).innerText = dummyResponse;
-                    document.getElementById(resultId).classList.remove('hidden');
-                } else {
-                    document.getElementById('ai-text-main').innerText = dummyResponse;
-                    document.getElementById('ai-result-main').classList.remove('hidden');
-                }
-            }, 1500);
-        }
-
-        // 초기 fade-in 트리거
+        // 초기 트리거
         window.dispatchEvent(new Event('scroll'));
     </script>
 </body>
