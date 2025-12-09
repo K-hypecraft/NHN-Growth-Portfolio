@@ -230,7 +230,14 @@
 
             <!-- 수원문화재단 -->
             <div class="mb-24 fade-in">
-                <div class="project-card p-8 md:p-12 rounded-3xl bg-black/50" onclick="openModal('suwon')">
+                <div class="project-card p-8 md:p-12 rounded-3xl bg-black/50 overflow-hidden" onclick="openModal('suwon')">
+                    <!-- 이미지 갤러리 -->
+                    <div class="grid grid-cols-4 gap-4 mb-8 -mx-8 md:-mx-12 -mt-8 md:-mt-12">
+                        <img src="images/suwon-festival-01.jpg" alt="수원화성 미디어아트 전경" class="w-full h-48 object-cover opacity-80 hover:opacity-100 transition-opacity">
+                        <img src="images/suwon-festival-04.jpg" alt="미디어 파사드 공연" class="w-full h-48 object-cover opacity-80 hover:opacity-100 transition-opacity">
+                        <img src="images/suwon-festival-02.jpg" alt="인터랙티브 설치물" class="w-full h-48 object-cover opacity-80 hover:opacity-100 transition-opacity">
+                        <img src="images/suwon-award.jpg" alt="모범직원 표창장" class="w-full h-48 object-cover opacity-80 hover:opacity-100 transition-opacity">
+                    </div>
                     <div class="flex flex-col md:flex-row gap-8">
                         <div class="w-full md:w-2/3">
                             <div class="text-[#0affff] font-mono text-sm mb-2">2025.05 ~ 2025.11 | 7개월</div>
@@ -654,6 +661,14 @@
                 period: '2025.05 ~ 2025.11',
                 role: '관광육성팀 주임 | Ticket Manager & 축제 운영 총괄',
                 summary: '51만 명 방문 대규모 축제 16일 무사고 운영. 티켓 시스템 완결성 확보 및 제로 예산 SNS 전략으로 조회수 55배 증가. 신규 입사 7개월 만에 모범직원 표창장 수상.',
+                images: [
+                    { url: 'images/suwon-festival-01.jpg', caption: '수원화성 미디어아트쇼 전경 - 51만 명 관람' },
+                    { url: 'images/suwon-festival-04.jpg', caption: '미디어 파사드 공연 - 대규모 현장 통제' },
+                    { url: 'images/suwon-festival-02.jpg', caption: '인터랙티브 설치물 - 상상놀이마당' },
+                    { url: 'images/suwon-festival-03.jpg', caption: '행궁가게 플리마켓 - 지역상권 연계' },
+                    { url: 'images/suwon-award.jpg', caption: '모범직원 표창장 - 신규 입사 7개월' },
+                    { url: 'images/suwon-sns-analytics.jpg', caption: 'SNS 성장 데이터 - 팔로워 36% 증가' }
+                ],
                 achievements: [
                     { title: '대규모 현장 통제', desc: '16일간 51만 명 무사고 운영. 야간 축제 특성상 퇴근시간대 인파 집중 위험 최고조 상황에서 완벽한 안전 관리.' },
                     { title: '우천 취소 민원 폭주 해결', desc: '정부 시스템 다운으로 당일 4~5시 취소 결정. 전국 출발 준비 중 관람객 혼란. 홍보팀 긴급 협조 + SNS 실시간 응대로 민원 최소화.' },
@@ -691,6 +706,9 @@
                 period: '2022.03 ~ 2024.03 (2년)',
                 role: '국제교류원 & 디지털 마케팅 기획',
                 summary: '홈페이지·SNS 리브랜딩 프로젝트 총괄 및 산학협력 B2B 영업. 혁신사업 우수상 수상. 현역 영화감독·음악감독 등 업계 네트워크 확보.',
+                images: [
+                    { url: 'images/university-team.jpg', caption: '2023 지속가능발전포럼 - 혁신사업 팀' }
+                ],
                 achievements: [
                     { title: '리브랜딩 프로젝트 총괄', desc: '학교 홈페이지·SNS 톤앤매너 리뉴얼. 디자인 에이전시 선정부터 결과물 검수까지 주 2회 미팅. 3차 수정안까지 브랜드 일관성 확보.' },
                     { title: '산학협력 B2B 영업', desc: '교수님과 함께 기업 컨택. 예술대 학생 콘텐츠(머지리티 등)를 기업 니즈와 매칭하여 협업 프로젝트 성사.' },
@@ -708,7 +726,9 @@
                 images: [
                     { url: 'images/morang-01.png', caption: '작업 공간 - 제작 과정 투명 공개' },
                     { url: 'images/morang-02.jpg', caption: '돌쥬 제작 - K-POP 팬덤 아트토이' },
-                    { url: 'images/morang-03.png', caption: '드림포터 라인 - 3차 완판 달성' }
+                    { url: 'images/morang-03.png', caption: '드림포터 라인 - 3차 완판 달성' },
+                    { url: 'images/morang-horamic-01.jpg', caption: '호라믹 작품 - 멤버 특화 라인' },
+                    { url: 'images/morang-kiln.jpg', caption: '가마 굽기 - 수공예 제작 과정' }
                 ],
                 achievements: [
                     { title: '팬덤 데이터 기반 상품 기획', desc: '10년+ 아이돌 팬 경험 체화. 별도 시장조사 없이도 "지금 팬들이 원하는 것" 정확히 파악 가능.' },
